@@ -1,6 +1,9 @@
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, callbacks
 import plotly.express as px
 import pandas as pd
+import dash_bootstrap_components as dbc
+import dash_html_components as html
+
 
 # Création de l'application avec suppress_callback_exceptions=True
 app = Dash(__name__, suppress_callback_exceptions=True)
@@ -11,7 +14,8 @@ fig = px.bar(top_10_books, x='title', y='  num_pages', color='average_rating',
              title='Les 10 premiers Livres',
              hover_data=['  num_pages'])
 
-app.layout = html.Div([
+app.layout = dbc.Tabs([
+    dbc.Tab(html.Div(html.Div(children=[
     html.H1("Les 10 premiers Livres"),
     dcc.Graph(id='graph', figure=fig),
     html.I('Choisis un auteur :'),
@@ -19,7 +23,13 @@ app.layout = html.Div([
                  multi=False, value=df['authors'].unique()[0]),
     html.I('Choisis un nombre de pages :'),
     dcc.Input(id="input1", type="text", placeholder=""),
+     ])), label="Graphique"),
+    dbc.Tab([
+        html.H1(style={'background-image': 'url(https://actualitte.com/uploads/images/interieur-d-une-librairie-61b9b51211875735300000.jpg)',
+                                'background-repeat': 'no-repeat', 'background-position': 'left', 'height': '100vh'}),
+    ], label="Photo"),
 ])
+
 
 # Callback pour le filtrage par auteur et nombre de pages
 @app.callback(
